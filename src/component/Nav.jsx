@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { login } from '../api/firebase';
 
 function Nav(props) {
+
+    const [user, setUser] = useState();
+
+    useEffect(()=>{
+        setUser(user);
+    },[])
+
+    const userLogin = () => {
+        login().then(setUser);
+    }
+
     return (
         <HeaderContainer>
             <Link to='/'>
@@ -19,7 +31,7 @@ function Nav(props) {
             </nav>
 
             <div className='userWrap'>
-                <button className='loginBtn'>Login</button>
+                <button className='loginBtn' onClick={userLogin}>Login</button>
                 <button className='logoutBtn'>Logout</button>
             </div>
         </HeaderContainer>

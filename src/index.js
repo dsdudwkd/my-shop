@@ -15,11 +15,11 @@ const routes = createBrowserRouter([
     path: '/',
     element: <App />,
     errorElement: <NotFound />,
-    children : [{
-      path : '/products', element : <AllProduct />,
-      path : '/products/new', element : <NewProduct/>,
-      path : '/cart', element : <MyCart/>,
-    }]
+    children : [
+      {path : '/products', element : <AllProduct />},
+      {path : '/products/new', element : <NewProduct/>},
+      {path : '/cart', element : <MyCart/>},
+    ]
   },
   
 ])
