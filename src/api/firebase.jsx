@@ -1,7 +1,8 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
+import {get, getDatabase, ref} from 'firebase/database';
 
 const firebaseConfig = {
     /* 
@@ -14,22 +15,71 @@ const firebaseConfig = {
 
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    databaseURL: process.env.REACT_APP_FIREBASE_DB_URL
 }
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
 const provider = new GoogleAuthProvider();//구글 로그인 세팅
 const auth = getAuth();
+const database = getDatabase(app);
 
-export async function login() {
+//자동 로그인 현상 수정
+provider.setCustomParameters({
+    prompt : 'select_account',
+})
+
+//구글 로그인
+export async function logIn() {
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
         console.log(user);
         return user;
     } catch(error) {
-        console.log(error);
+        console.error(error);
+    }
+}
+
+//구글 로그아웃
+export async function logOut(){
+    try{
+        await signOut(auth)
+    } catch(error){
+        console.error(error);
+    }
+}
+
+//로그인 시 정보 계속 유지
+export function onUserState(callback){
+    onAuthStateChanged(auth, async(user)=>{
+        // const updateUser = user;
+        // callback(updateUser);
+        if(user){
+            try{
+                const updateUser = await adminUser(user);
+                callback(updateUser);
+            }catch(error){
+                console.error(error);
+            }
+        } else {
+            callback(null);
+        }
+    })
+}
+
+//관리자 계정 관리
+async function adminUser(user){
+    try{
+        const snapShot = await get(ref(database, 'admin')); //firebase에 있는 database
+        if(snapShot.exists()){
+            const admins = snapShot.val();
+            const isAdmin = admins.includes(user.email);
+            return{...user, isAdmin}
+        }
+        return user;
+    }catch(error){
+        console.error(error);
     }
 }

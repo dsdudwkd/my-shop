@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import NewProduct from './pages/NewProduct';
 import AllProduct from './pages/AllProduct';
 import NotFound from './pages/NotFound';
 import MyCart from './pages/MyCart';
+import { useAuthContext } from './context/AuthContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+//관리자 인증
+const ProtectRoute = ({checkAdmin, children}) => {
+  const {user} = useAuthContext();
+
+  if(!user || (checkAdmin && !user.isAdmin)){
+    return <Navigate to='/' replace />
+  }
+  return children;
+}
+
 const routes = createBrowserRouter([
   {
     path: '/',
@@ -17,7 +29,12 @@ const routes = createBrowserRouter([
     errorElement: <NotFound />,
     children : [
       {path : '/products', element : <AllProduct />},
-      {path : '/products/new', element : <NewProduct/>},
+      {path : '/products/new', 
+       element : 
+       <ProtectRoute checkAdmin>
+         <NewProduct/>
+       </ProtectRoute>
+       },
       {path : '/cart', element : <MyCart/>},
     ]
   },
