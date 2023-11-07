@@ -2,7 +2,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
-import {get, getDatabase, ref} from 'firebase/database';
+import {get, getDatabase, ref, set} from 'firebase/database';
+import {v4 as uuid} from 'uuid'; //고유 식별자를 생성해주는 패키지
 
 const firebaseConfig = {
     /* 
@@ -82,4 +83,18 @@ async function adminUser(user){
     }catch(error){
         console.error(error);
     }
+}
+
+//파이어베이스에 상품 정보 연동하기
+export async function addProducts(product, image){
+    const id = uuid();
+    return set(ref(database, `products/${id}`),{
+        ...product,
+        id,
+        // price,
+        // image,
+        // option,
+        // title,
+        // category
+    }) //products라는 폴더가 알아서 만들어짐
 }
