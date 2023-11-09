@@ -9,6 +9,8 @@ import AllProduct from './pages/AllProduct';
 import NotFound from './pages/NotFound';
 import MyCart from './pages/MyCart';
 import { useAuthContext } from './context/AuthContext';
+import DetailPageEvent from './component/DetailPageEvent';
+import ProductDetail from './pages/ProductDetail';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -36,6 +38,7 @@ const routes = createBrowserRouter([
        </ProtectRoute>
        },
       {path : '/cart', element : <MyCart/>},
+      {path : '/products/detail/:id', element : <ProductDetail /> }
     ]
   },
   

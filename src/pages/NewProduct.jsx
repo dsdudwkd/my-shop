@@ -9,7 +9,8 @@ function NewProduct(props) {
         title : '',
         price : '',
         option : '',
-        category : ''
+        category : '',
+        description : ''
     })
 
     
@@ -37,15 +38,38 @@ function NewProduct(props) {
             const url = await upLoadImg(file);
             await addProducts(product, url) //파이어베이스 데이터 연동 스크립트 실행
             setSuccess('업로드가 완료 되었습니다.');
-        }catch(error){
+            setTimeout(()=>{
+                setSuccess(null);
+            },2000);
+            setProduct({
+                title : '',
+                price : '',
+                description : '',
+                option : '',
+                category : ''
+            });
+            setFile(null);
+
+        }catch(error){ /* 에러 잡을 때 */
             console.error(error);
             setError('업로드 실패');
+        } finally { /* 요청 후 작업 */
+            setIsLoading(false);
         }
     }
 
     return (
         <div className='container'>
             <FormContainer>
+
+                {success && <p className = 'resultText'>{success}</p>}
+
+                <div className='imgWrap'>
+                    {file && (
+                        <img src={URL.createObjectURL(file)} alt={product.title} />
+                    )}
+                </div>
+
                 <form onSubmit={onSubmit}>
                     {/* 이미지 업로드 */}
                     <input type="file" name='file' accept="'image/*" onChange={onChange} />
@@ -57,8 +81,9 @@ function NewProduct(props) {
                     <input type="text" name='category' placeholder='상품 분류' value={product.category} onChange={onChange} />
                     {/* 상품 옵션 */}
                     <input type="text" name='option' placeholder='상품 옵션' value={product.option} onChange={onChange} />
-
-                    {/*  */}
+                    {/* 제품 설명 */}
+                    <input type="text" name='description' placeholder='제품 설명' value={product.description} onChange={onChange} />
+                    
                     <button disabled={isLoading}>
                         {isLoading ? '업로드 중' : '제품 등록하기'}
                     </button>
@@ -71,5 +96,39 @@ function NewProduct(props) {
 export default NewProduct;
 
 const FormContainer = styled.div`
-    
+    max-width: 1280px;
+    padding: 30px 0;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+
+    .imgWrap{
+        max-width: 500px;
+        height: 500px;
+        img{
+            display: block;
+            height: 100%;
+        }
+    }
+
+    form{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        input{
+            width: 100%;
+            box-sizing: border-box;
+            height: 40px;
+            border-radius: 4px;
+            border: none;
+        }
+        button{
+            margin-top: 50px;
+            height: 50px;
+            border-radius: 5px;
+            background-color: pink;
+            border: none;
+        }
+    }
 `
