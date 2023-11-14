@@ -13,6 +13,7 @@ function DetailPageEvent({ product }) {
         navigate(`/products/detail/${product.id}`, {
             state : {
                 id : product.id,
+                title : product.title,
                 image : product.image,
                 price : product.price,
                 option : product.option,
