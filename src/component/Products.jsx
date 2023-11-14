@@ -20,7 +20,7 @@ function Products(props) {
         queryKey : ['products'], //가져오려는 값
         queryFn : getProducts //값을 가져올 때 사용할 함수
     });
-    console.log(products); //제품 등록한 상품들 보임
+    // console.log(products); //제품 등록한 상품들 보임
 
 
     return (

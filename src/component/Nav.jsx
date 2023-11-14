@@ -46,6 +46,9 @@ function Nav(props) {
             </nav>
 
             <div className='userWrap'>
+
+                <Link to='/cart'>장바구니</Link>
+
                 {user && user.isAdmin && (
                     <Link to='/products/new'>
                         신상 등록

@@ -2,8 +2,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
-import {get, getDatabase, ref, set} from 'firebase/database';
-import {v4 as uuid} from 'uuid'; //고유 식별자를 생성해주는 패키지
+import { get, getDatabase, ref, set } from 'firebase/database';
+import { v4 as uuid } from 'uuid'; //고유 식별자를 생성해주는 패키지
 
 const firebaseConfig = {
     /* 
@@ -28,7 +28,7 @@ const database = getDatabase(app);
 
 //자동 로그인 현상 수정
 provider.setCustomParameters({
-    prompt : 'select_account',
+    prompt: 'select_account',
 })
 
 //구글 로그인
@@ -38,30 +38,30 @@ export async function logIn() {
         const user = result.user;
         console.log(user);
         return user;
-    } catch(error) {
+    } catch (error) {
         console.error(error);
     }
 }
 
 //구글 로그아웃
-export async function logOut(){
-    try{
+export async function logOut() {
+    try {
         await signOut(auth)
-    } catch(error){
+    } catch (error) {
         console.error(error);
     }
 }
 
 //로그인 시 정보 계속 유지
-export function onUserState(callback){
-    onAuthStateChanged(auth, async(user)=>{
+export function onUserState(callback) {
+    onAuthStateChanged(auth, async (user) => {
         // const updateUser = user;
         // callback(updateUser);
-        if(user){
-            try{
+        if (user) {
+            try {
                 const updateUser = await adminUser(user);
                 callback(updateUser);
-            }catch(error){
+            } catch (error) {
                 console.error(error);
             }
         } else {
@@ -71,29 +71,31 @@ export function onUserState(callback){
 }
 
 //관리자 계정 관리
-async function adminUser(user){
-    try{
+async function adminUser(user) {
+    try {
         const snapShot = await get(ref(database, 'admin')); //firebase에 있는 database
-        if(snapShot.exists()){
+        if (snapShot.exists()) {
             const admins = snapShot.val();
             const isAdmin = admins.includes(user.email);
-            return{...user, isAdmin}
+            return { ...user, isAdmin }
         }
         return user;
-    }catch(error){
+    } catch (error) {
         console.error(error);
     }
 }
 
 //파이어베이스에 상품 정보 연동하기
-export async function addProducts(product, image){
+export async function addProducts(product, image) {
     const id = uuid();
-    return set(ref(database, `products/${id}`),{
+    return set(ref(database, `products/${id}`), {
         ...product,
         id,
         // price,
         image,
-        // option,
+        //trim() = 문자열에 있는 공백 제거
+        //join(',') = 분리된 문자를 다시 문자열인 쉼표로 구분하여 작성
+        // option ,
         // title,
         // category
     }) //products라는 폴더가 알아서 만들어짐
@@ -101,20 +103,47 @@ export async function addProducts(product, image){
 
 //데이터베이스에 연동된 정보들 가져오기
 //
-export async function getProducts(){
+export async function getProducts() {
     /* 
     - async = 비동기 방식의 데이터 처리 방법 (promise의 단점을 보완한 최신 비동기처리방식 코드)
     - return get(ref(database, 'products'))
     = 파이어베이스에 있는 실시간 데이터베이스의 product노드(경로)에 대한 참조와 함께 생성하고 읽기 작업을 시작하면 비동기로 호출받은 정보값을 반환
     - .then((snapshot) = snapshot은 내가 참조하고 있는 노드
     - snapshot이라는 매개변수명을 사용하는 이유는 특정 순간을 저장한 후에 결과와 비교해서 일치하는지 확인하는 테스트 단계
-    */ 
-    
-    return get(ref(database, 'products')).then((snapshot)=>{ 
+    */
 
-        if(snapshot.exists()){ //snapshot에 접근한 노드에 데이터가 있는지 확인
+    return get(ref(database, 'products')).then((snapshot) => {
+
+        if (snapshot.exists()) { //snapshot에 접근한 노드에 데이터가 있는지 확인
             return Object.values(snapshot.val()); //데이터가 있으면 snapshot노드에 있는 객체들을 배열로 변환해서 반환
         }
         return [] //데이터가 없으면 빈 배열로 반환
     })
+}
+
+//장바구니에 저장된 요소들 업데이트하기
+export async function updateCart(userId, product){
+    try{
+        const cartRef = ref(database, `cart/${userId}/${product.id}`);
+        await set(cartRef, product);
+    }catch(error){
+        console.error(error);
+    }
+}
+
+//유저 아이디를 가져와야 장바구니에 있는 정보를 가져옴
+export async function getCart(userId){
+    try{
+        const snapShot = await get(ref(database, `cart/${userId}`));
+        console.log(snapShot)
+        if(snapShot.exists()){
+            const item = snapShot.val();
+            console.log(item)
+            return Object.values(item);
+        }else {
+            return [];
+        }
+    } catch(error){
+        console.error(error);
+    }
 }

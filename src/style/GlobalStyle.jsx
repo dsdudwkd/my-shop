@@ -67,6 +67,81 @@ button{
         flex-basis: 30%;
     }
 }
+
+/* ProductDetail 페이지 */
+.detailPage{
+    max-width:1024px;
+    display:flex;
+    gap: 40px;
+    margin: 0 auto;
+    .detailImg{
+        max-width: 400px;
+        img{
+            width: 100%;
+            display: block;
+        }
+    }
+    .detailText{
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+        h2{
+            font-size:24px;
+            width:100%;
+            font-weight: normal;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 16px;
+        }
+        p{
+            width: 100%;
+            padding-bottom: 16px;
+            color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            font-size: 18px;
+            span{
+                padding-left: 100px;
+            }
+
+        }
+        .detailOpt{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            label{
+                font-size: 20px;
+                color:rgba(0, 0, 0, 0.7);
+            }
+            select{
+                margin-left:100px;
+                width: 100px;
+                padding: 6px 12px;
+                background: transparent;
+                border: 1px solid black;
+                border-radius: 3px;
+            }
+        }
+        .detailBtns{
+            display: flex;
+            gap: 16px;
+            margin-top: auto;
+            flex-direction: column;
+            button{
+                width: 100%;
+                height: 50px;
+                border-radius: 5px;
+                border: none;
+                font-size: 15px;
+            }
+            .cartBtn{
+                background-color: beige;
+            }
+            .buyBtn{
+                background-color: blanchedalmond;
+            }
+        }
+    }
+}
 `
 
 export default GlobalStyle;
