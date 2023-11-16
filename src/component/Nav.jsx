@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { logOut, logIn, onUserState } from '../api/firebase';
 import UserData from './UserData';
 import { useAuthContext } from '../context/AuthContext';
+import CategoryList from './CategoryList';
 
 function Nav(props) {
 
@@ -28,7 +29,7 @@ function Nav(props) {
     //     logOut().then(setUser);
     // }
 
-    const {user, logIn, logOut} = useAuthContext();
+    const { user, logIn, logOut } = useAuthContext();
 
     return (
         <HeaderContainer>
@@ -37,9 +38,10 @@ function Nav(props) {
             </Link>
 
             <nav>
-                <Link to='/products/new'>
+                {/* <Link to='/products/new'>
                     신상품
-                </Link>
+                </Link> */}
+                <CategoryList />
                 <Link to='/products'>
                     모든 상품
                 </Link>

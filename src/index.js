@@ -11,6 +11,7 @@ import MyCart from './pages/MyCart';
 import { useAuthContext } from './context/AuthContext';
 import DetailPageEvent from './component/DetailPageEvent';
 import ProductDetail from './pages/ProductDetail';
+import CategoryPage from './component/CategoryPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -38,7 +39,9 @@ const routes = createBrowserRouter([
        </ProtectRoute>
        },
       {path : '/cart', element : <MyCart/>},
-      {path : '/products/detail/:id', element : <ProductDetail /> }
+      {path : '/products/detail/:id', element : <ProductDetail /> },
+      {path : '/products/:category', element : <CategoryPage />}
+
     ]
   },
   

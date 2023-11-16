@@ -2,7 +2,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
-import { get, getDatabase, ref, set } from 'firebase/database';
+import { get, getDatabase, ref, remove, set } from 'firebase/database';
 import { v4 as uuid } from 'uuid'; //고유 식별자를 생성해주는 패키지
 
 const firebaseConfig = {
@@ -134,11 +134,11 @@ export async function updateCart(userId, product){
 //유저 아이디를 가져와야 장바구니에 있는 정보를 가져옴
 export async function getCart(userId){
     try{
-        const snapShot = await get(ref(database, `cart/${userId}`));
-        console.log(snapShot)
+        const snapShot = await (get(ref(database, `cart/${userId}`)));
+        // console.log(snapShot)
         if(snapShot.exists()){
             const item = snapShot.val();
-            console.log(item)
+            // console.log(item)
             return Object.values(item);
         }else {
             return [];
@@ -146,4 +146,40 @@ export async function getCart(userId){
     } catch(error){
         console.error(error);
     }
+}
+
+//장바구니 삭제
+export async function deleteCartItem(userId, productId){
+    console.log(userId, productId)
+    return remove(ref(database, `cart/${userId}/${productId}`));
+}
+
+//데이터베이스에 등록한 상품 카테고리명 불러오기
+export async function getCategory() {
+    const database = getDatabase(); //db 가져오는 함수
+    const categoryRef = ref(database, 'products'); //product폴더에 들어가야 상품들을 카테고리별로 나눌 수 있으므로
+    
+    try{
+        const snapshot = await get(categoryRef);
+        console.log(categoryRef)
+        if(snapshot.exists()){
+            console.log(snapshot.val())
+            return Object.values(snapshot.val());
+            
+        }
+    }catch(error){
+        console.error(error);
+    }
+}
+
+//데이터베이스에 있는 카테고리별 상품을 분류해서 불러오기
+export async function getCategoryProduct(category){
+    return get(ref(database, 'products')).then((snapshot)=>{
+        if(snapshot.exists()){
+            const allProduct = Object.values(snapshot.val()); //먼저 모든 상품 정보를 받아온 후에 카테고리별로 필터링을 거치는 순서
+            const filterProduct = allProduct.filter((product)=> product.category === category);
+            return filterProduct
+        }
+        return [];
+    })
 }

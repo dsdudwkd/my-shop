@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthContext } from "./AuthContext";
-import { getCart, updateCart } from "../api/firebase";
+import { deleteCartItem, getCart, updateCart } from "../api/firebase";
 
 //아이디마다 장바구니 상태가 달라야함
 export default function UseCart(){
@@ -10,7 +10,7 @@ export default function UseCart(){
     const cartInfo = useQuery(['cart', uid || ''], ()=> getCart(uid),{
         enabled : !!uid
     }); //cart라는 폴더와 uid or 빈 배열이 있으면 상품 정보를 넣는다
-    console.log(uid)
+    // console.log(uid)
 
     //useMutation() = 정보를 업데이트 할 때 사용하는 구문
     const addItemCart = useMutation(
@@ -23,5 +23,13 @@ export default function UseCart(){
         }
     )
 
-    return {cartInfo, addItemCart}
+    const deleteItem = useMutation((id) => deleteCartItem(uid, id), 
+        {
+            onSuccess : () => {
+                queryClient.invalidateQueries(['cart', uid]);
+            }
+        }
+    )
+
+    return {cartInfo, addItemCart, deleteItem}
 }
