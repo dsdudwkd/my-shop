@@ -162,6 +162,42 @@ button{
         }
     }
 }
+
+//검색창
+
+
+.searchForm{
+    width: 100%;
+    height: 50px;
+    margin-bottom: 50px;
+    background-color: white;
+    border: none;
+    font-size: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+//search result
+.searchResultList{
+    display: flex;
+    gap: 12px;
+    flex-direction: column;
+    li{
+        > div{
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+        }
+    }
+    img{
+        width: 150px;
+        
+    }
+}
+
+
 `
 
 export default GlobalStyle;

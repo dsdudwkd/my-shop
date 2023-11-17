@@ -7,7 +7,7 @@ import styled from 'styled-components';
 function CategoryList(props) {
 
     const { data: categories } = useQuery(['categories'], getCategory);
-    console.log(categories)
+    // console.log(categories)
     const setCategory = new Set(); //특정한 값을 배열로 출력해줄 때 중복 요소를 걸러준다
 
     if (categories) {
@@ -16,7 +16,7 @@ function CategoryList(props) {
         })
     }
     const setCategoryArr = [...setCategory];
-    console.log(setCategoryArr);
+    // console.log(setCategoryArr);
 
     return (
         /* 스타일 컴포넌트 */

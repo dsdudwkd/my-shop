@@ -12,14 +12,15 @@ import { useAuthContext } from './context/AuthContext';
 import DetailPageEvent from './component/DetailPageEvent';
 import ProductDetail from './pages/ProductDetail';
 import CategoryPage from './component/CategoryPage';
+import Search from './pages/Search';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 //관리자 인증
-const ProtectRoute = ({checkAdmin, children}) => {
-  const {user} = useAuthContext();
+const ProtectRoute = ({ checkAdmin, children }) => {
+  const { user } = useAuthContext();
 
-  if(!user || (checkAdmin && !user.isAdmin)){
+  if (!user || (checkAdmin && !user.isAdmin)) {
     return <Navigate to='/' replace />
   }
   return children;
@@ -30,21 +31,22 @@ const routes = createBrowserRouter([
     path: '/',
     element: <App />,
     errorElement: <NotFound />,
-    children : [
-      {path : '/products', element : <AllProduct />},
-      {path : '/products/new', 
-       element : 
-       <ProtectRoute checkAdmin>
-         <NewProduct/>
-       </ProtectRoute>
-       },
-      {path : '/cart', element : <MyCart/>},
-      {path : '/products/detail/:id', element : <ProductDetail /> },
-      {path : '/products/:category', element : <CategoryPage />}
-
+    children: [
+      { path: '/products', element: <AllProduct /> },
+      {
+        path: '/products/new',
+        element:
+          <ProtectRoute checkAdmin>
+            <NewProduct />
+          </ProtectRoute>
+      },
+      { path: '/cart', element: <MyCart /> },
+      { path: '/products/detail/:id', element: <ProductDetail /> },
+      { path: '/products/:category', element: <CategoryPage /> },
+      { path: '/search', element: <Search />}
     ]
   },
-  
+
 ])
 root.render(
   <React.StrictMode>

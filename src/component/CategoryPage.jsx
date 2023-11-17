@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getCategoryProduct } from '../api/firebase';
 import CategoryList from './CategoryList';
 import CategoryProductList from './CategoryProductList';
+import SlideItem from './SlideItem';
 
 function CategoryPage(props) {
 
@@ -19,6 +20,7 @@ function CategoryPage(props) {
     },[category])
     return (
         <div>
+            <SlideItem />
             <CategoryProductList category={category} product={product} />
         </div>
     );

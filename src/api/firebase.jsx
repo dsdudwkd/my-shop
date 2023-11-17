@@ -3,6 +3,7 @@
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { get, getDatabase, ref, remove, set } from 'firebase/database';
+import { getDownloadURL, getStorage, ref as storageRef } from 'firebase/storage';
 import { v4 as uuid } from 'uuid'; //고유 식별자를 생성해주는 패키지
 
 const firebaseConfig = {
@@ -25,6 +26,9 @@ const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();//구글 로그인 세팅
 const auth = getAuth();
 const database = getDatabase(app);
+const storage = getStorage(app);
+
+export {storage};
 
 //자동 로그인 현상 수정
 provider.setCustomParameters({
@@ -122,34 +126,34 @@ export async function getProducts() {
 }
 
 //장바구니에 저장된 요소들 업데이트하기
-export async function updateCart(userId, product){
-    try{
+export async function updateCart(userId, product) {
+    try {
         const cartRef = ref(database, `cart/${userId}/${product.id}`);
         await set(cartRef, product);
-    }catch(error){
+    } catch (error) {
         console.error(error);
     }
 }
 
 //유저 아이디를 가져와야 장바구니에 있는 정보를 가져옴
-export async function getCart(userId){
-    try{
+export async function getCart(userId) {
+    try {
         const snapShot = await (get(ref(database, `cart/${userId}`)));
         // console.log(snapShot)
-        if(snapShot.exists()){
+        if (snapShot.exists()) {
             const item = snapShot.val();
             // console.log(item)
             return Object.values(item);
-        }else {
+        } else {
             return [];
         }
-    } catch(error){
+    } catch (error) {
         console.error(error);
     }
 }
 
 //장바구니 삭제
-export async function deleteCartItem(userId, productId){
+export async function deleteCartItem(userId, productId) {
     console.log(userId, productId)
     return remove(ref(database, `cart/${userId}/${productId}`));
 }
@@ -158,28 +162,69 @@ export async function deleteCartItem(userId, productId){
 export async function getCategory() {
     const database = getDatabase(); //db 가져오는 함수
     const categoryRef = ref(database, 'products'); //product폴더에 들어가야 상품들을 카테고리별로 나눌 수 있으므로
-    
-    try{
+
+    try {
         const snapshot = await get(categoryRef);
-        console.log(categoryRef)
-        if(snapshot.exists()){
-            console.log(snapshot.val())
+        // console.log(categoryRef)
+        if (snapshot.exists()) {
+            // console.log(snapshot.val())
             return Object.values(snapshot.val());
-            
+
         }
-    }catch(error){
+    } catch (error) {
         console.error(error);
     }
 }
 
 //데이터베이스에 있는 카테고리별 상품을 분류해서 불러오기
-export async function getCategoryProduct(category){
-    return get(ref(database, 'products')).then((snapshot)=>{
-        if(snapshot.exists()){
+export async function getCategoryProduct(category) {
+    return get(ref(database, 'products')).then((snapshot) => {
+        if (snapshot.exists()) {
             const allProduct = Object.values(snapshot.val()); //먼저 모든 상품 정보를 받아온 후에 카테고리별로 필터링을 거치는 순서
-            const filterProduct = allProduct.filter((product)=> product.category === category);
+            const filterProduct = allProduct.filter((product) => product.category === category);
             return filterProduct
         }
         return [];
     })
+}
+
+//상품 검색
+export async function searchProduct(query) {
+
+    try {
+        const dbRef = ref(database, 'products');
+        const snapshot = await get(dbRef); // = await get(ref(database, 'products'))
+
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            const allProduct = Object.values(data);
+
+            if (allProduct.length === 0) { //모든 상품 정보가 하나도 없으면 빈 배열 반환
+                return []
+            }
+            const matchItem = allProduct.filter((product) => {
+                const itemTitle = product.title.toLowerCase(); //받아온 문자열이 영어면 소문자로 변환
+                console.log(itemTitle); //상품 정보
+                return itemTitle.includes(query.toLowerCase());
+            })
+            return matchItem;
+        } else {
+            return []
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+//스토리지에서 사진 가져오기
+export async function getStorageImg(imgPath) {
+    const storage = getStorage();
+
+    try {
+        const imgRef = storageRef(storage, imgPath);
+        const downloadURL = await getDownloadURL(imgRef);
+        return downloadURL;
+    }catch(error){
+        console.error(error);
+    }
 }
