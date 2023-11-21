@@ -10,12 +10,7 @@ function Nav(props) {
 
     // const [user, setUser] = useState();
 
-    // useEffect(() => {
-    //     onUserState((user) => {
-    //         console.log(user);
-    //         setUser(user);
-    //     })
-    // }, [])
+    // 
 
     // useEffect(() => {
     //     onUserState(setUser);
@@ -25,11 +20,23 @@ function Nav(props) {
     //     logIn().then(setUser);
     // }
 
-    // const userLogOut = () => {
-    //     logOut().then(setUser);
-    // }
+    // 
 
-    const { user, logIn, logOut } = useAuthContext();
+    //로그인 or 로그아웃 버튼 활성화 방법 1
+    // const { user, logIn, logOut } = useAuthContext();
+
+    //로그인 or 로그아웃 버튼 활성화 방법 2
+    const [user, setUser] = useState('');
+    const userLogOut = () => {
+        logOut().then(setUser);
+    }
+
+    useEffect(() => {
+        onUserState((user) => {
+            console.log(user);
+            setUser(user);
+        })
+    }, [])
 
     return (
         <HeaderContainer>
@@ -56,9 +63,26 @@ function Nav(props) {
                         신상 등록
                     </Link>
                 )}
-                {user && <UserData user={user} />}
+                {/* {user && <UserData user={user} />}
                 {!user && <button className='loginBtn' onClick={logIn}>Login</button>}
                 {user && <button className='logoutBtn' onClick={logOut}>Logout</button>}
+                <Link to={'/login'}>
+                    로그인
+                </Link> */}
+                {user ? (
+                    <> {/* 조건문 fragment로 감싸기 */}
+                        {user && <UserData user={user} />}
+
+                        {/* 로그아웃 버튼 활성화 방법 1 */}
+                        {/* <button onClick={logOut} className='logoutBtn'>로그아웃</button> */}
+                        {/* 로그아웃 버튼 활성화 방법 2 */}
+                        <button onClick={userLogOut} className='logoutBtn'>로그아웃</button>
+                    </>
+                ) : (
+                    <Link to='/login'>
+                        <button className='loginBtn'>로그인</button>
+                    </Link>
+                )}
             </div>
         </HeaderContainer>
     );

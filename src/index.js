@@ -13,6 +13,8 @@ import DetailPageEvent from './component/DetailPageEvent';
 import ProductDetail from './pages/ProductDetail';
 import CategoryPage from './component/CategoryPage';
 import Search from './pages/Search';
+import Login from './pages/Login';
+import Join from './pages/Join';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -43,7 +45,9 @@ const routes = createBrowserRouter([
       { path: '/cart', element: <MyCart /> },
       { path: '/products/detail/:id', element: <ProductDetail /> },
       { path: '/products/:category', element: <CategoryPage /> },
-      { path: '/search', element: <Search />}
+      { path: '/search', element: <Search />},
+      { path: '/login', element: <Login />},
+      { path: '/join', element: <Join />,}
     ]
   },
 

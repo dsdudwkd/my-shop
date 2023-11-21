@@ -1,7 +1,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
+import { GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 import { get, getDatabase, ref, remove, set } from 'firebase/database';
 import { getDownloadURL, getStorage, ref as storageRef } from 'firebase/storage';
 import { v4 as uuid } from 'uuid'; //고유 식별자를 생성해주는 패키지
@@ -16,7 +16,7 @@ const firebaseConfig = {
     */
 
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN, //회원가입한 정보가 auth에 저장, id와 pw를 입력하면 auth에 저장된 id와 pw가 맞는지 확인하고 맞으면 로그인시켜줌(구글은 자체적으로)
     projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
     databaseURL: process.env.REACT_APP_FIREBASE_DB_URL
 }
@@ -28,7 +28,7 @@ const auth = getAuth();
 const database = getDatabase(app);
 const storage = getStorage(app);
 
-export {storage};
+export { storage };
 
 //자동 로그인 현상 수정
 provider.setCustomParameters({
@@ -50,7 +50,7 @@ export async function logIn() {
 //구글 로그아웃
 export async function logOut() {
     try {
-        await signOut(auth)
+        await signOut(auth);
     } catch (error) {
         console.error(error);
     }
@@ -224,7 +224,37 @@ export async function getStorageImg(imgPath) {
         const imgRef = storageRef(storage, imgPath);
         const downloadURL = await getDownloadURL(imgRef);
         return downloadURL;
-    }catch(error){
+    } catch (error) {
         console.error(error);
     }
+}
+
+//이메일로 회원가입하기
+export async function joinEmail(email, password) {
+    const auth = getAuth(); //저장할 사용자 인증 폼을 불러옴(저장소)
+
+    try {
+        const userCredit = await createUserWithEmailAndPassword(auth, email, password); //createUserWithEmailAndPassword메서드를 이용해 사용자 정보, 이메일, 패스워드를 변수에 저장
+        const user = userCredit.user;
+        console.log(user);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+//회원가입한 로그인 정보로 로그인하기
+export async function loginEmail(email, password) {
+
+    try {
+        const userCredit = await signInWithEmailAndPassword(auth, email, password);
+        return userCredit.user;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+//중복 이메일 체크
+export async function checkEmail(email){
+    const database = getDatabase();
+    const userRef = ref()
 }
