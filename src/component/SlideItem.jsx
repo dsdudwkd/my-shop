@@ -6,7 +6,7 @@ import 'swiper/css/effect-fade';
 import 'swiper/css'; //기본 swiper css
 import { getStorageImg, storage } from '../api/firebase';
 
-function SlideItem(props) {
+function SlideItem({imgs}) {
 
     const sliderImage = [
        /* 
@@ -16,17 +16,20 @@ function SlideItem(props) {
     
     const [imgUrl, setImgUrl] = useState([]);
     useEffect(()=>{
-        async function loadImg(){
+
+        const loadImg = async () => {
             try{
                 const urls = await Promise.all(
-                    imgUrl.map((imgPath)=>getStorageImg(imgPath, storage))
-                )
+                    imgs.map((imgPath)=>getStorageImg(imgPath))
+                );
                 setImgUrl(urls);
-            }catch(error){
+                // console.log(urls);
+            } catch(error){
                 console.error(error);
             }
         }
-    },[imgUrl])
+        loadImg();
+    },[imgs])
     const slider = {
         width : '500px',
         height : '600px',
@@ -42,7 +45,7 @@ function SlideItem(props) {
                 effect={'fade'}
             >
 
-            {sliderImage.map((el, index)=>(
+            {imgUrl.map((el, index)=>(
                 <SwiperSlide key={index} style={{background:`url(${el}) no-repeat center center / cover`}} />
             ))}
             </Swiper>

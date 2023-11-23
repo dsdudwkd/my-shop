@@ -23,11 +23,11 @@ function DetailPageEvent({ product }) {
         })
     }
     return (
-        <div onClick={detail}>
+        <div onClick={detail} className='productsItem'>
             <img src={product.image} alt={product.title} />
             <div className='textWrap'>
                 <h3 className='itemTitle'>{product.title}</h3>
-                <div className='itmeFlex'>
+                <div className='itemFlex'>
                     <p className='itemPrice'>{setPrice}원</p>
                     <p className='itemOpt'>{product.option}</p>
                 </div>

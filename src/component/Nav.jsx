@@ -33,7 +33,7 @@ function Nav(props) {
 
     useEffect(() => {
         onUserState((user) => {
-            console.log(user);
+            // console.log(user);
             setUser(user);
         })
     }, [])

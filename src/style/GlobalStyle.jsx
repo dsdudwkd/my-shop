@@ -28,6 +28,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
  line-height: 1;
+ background-color: #fff9f9;
 }
 ol, ul {
  list-style: none;
@@ -65,6 +66,27 @@ button{
     li{
         flex-shrink: 0;
         flex-basis: 30%;
+        .productsItem{
+            display: flex;
+            flex-direction: column;
+            gap : 20px;
+            .textWrap{
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                .itemTitle{
+                    font-size: 20px;
+                    font-weight: normal;
+                    transition: 500ms;
+                    color: rgba(0, 0, 0, 0.5);
+                }
+                .itemFlex{
+                    display: flex;
+                    justify-content: space-between;
+                }
+            }
+        }
+        
     }
 }
 
@@ -167,7 +189,10 @@ button{
 
 
 .searchForm{
-    width: 100%;
+    position: relative;
+    left: 25%;
+    top: 0;
+    width: 50%;
     height: 50px;
     margin-bottom: 50px;
     background-color: white;
@@ -175,12 +200,13 @@ button{
     font-size: 20px;
     border-radius: 10px;
     box-sizing: border-box;
+    outline: none;
 }
 
 //search result
 .searchResultList{
     display: flex;
-    gap: 12px;
+    gap: 14px;
     flex-direction: column;
     li{
         > div{
@@ -193,6 +219,7 @@ button{
     }
     img{
         width: 150px;
+        border-radius: 10px;
         
     }
 }

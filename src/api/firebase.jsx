@@ -18,7 +18,8 @@ const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN, //회원가입한 정보가 auth에 저장, id와 pw를 입력하면 auth에 저장된 id와 pw가 맞는지 확인하고 맞으면 로그인시켜줌(구글은 자체적으로)
     projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    databaseURL: process.env.REACT_APP_FIREBASE_DB_URL
+    databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
+    storageBucket : process.env.REACT_APP_STORAGEBUCKET,
 }
 
 // Initialize Firebase
@@ -204,7 +205,7 @@ export async function searchProduct(query) {
             }
             const matchItem = allProduct.filter((product) => {
                 const itemTitle = product.title.toLowerCase(); //받아온 문자열이 영어면 소문자로 변환
-                console.log(itemTitle); //상품 정보
+                // console.log(itemTitle); //상품 정보
                 return itemTitle.includes(query.toLowerCase());
             })
             return matchItem;
